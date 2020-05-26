@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # coded by zettamus
-
 import os
 import re 
 import time
@@ -11,8 +10,8 @@ import requests
 from bs4 import BeautifulSoup as parser
 from concurrent.futures import ThreadPoolExecutor
 mbasic = 'https://mbasic.facebook.com{}'
-id = []
 global die,check,result, count
+id = []
 die = 0
 count = 0
 check = 0
@@ -47,8 +46,6 @@ def masuk():
                  exit("# cookies wrong")
 def login(username,password):
         global die,check,result,count
-        token = "249280153189030%6b6044b39b3722e730e7507b293f34a1"
-        a = "237759909591655%25257C0f140aabedfb65ac27a739ed1a2263b1"
         b = "350685531728%7C62f8ce9f74b12f84c123cc23437a4a32"
         params = {
                 'access_token': b,
