@@ -215,5 +215,5 @@ if __name__ == '__main__':
                         exit("# no result")
         except (KeyboardInterrupt,EOFError):
                 exit()
-        execpt requests.exceptions.ConnectionError:
+        except requests.exceptions.ConnectionError:
                 exit("# Connection error")
