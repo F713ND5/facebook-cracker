@@ -75,7 +75,7 @@ def login(username,password):
         else:
                 die += 1
         for i in list('\|/-•'):
-                        print(f"\r[{i}] life : ({str(result)}) checkpoint : ({str(check)}) die : ({str(die)})",end="")
+                        print(f"\r[{i}] life : ({str(result)}) checkpoint : ({str(check)}) die : ({str(die)})                        ",end="")
                         time.sleep(0.3)
 def getid(url):
         raw = requests.get(url,cookies=kuki).content
